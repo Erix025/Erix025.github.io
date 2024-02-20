@@ -1,5 +1,12 @@
 site_name: Eric025's Blog
+
+nav:
+  - 主页:
+    - index.md
+  - Web相关:
+    - 如何搭建个人博客 : Web/mkdocs.md
+
 theme:
   name: material
-plugins: 
-  - blog
+  features:
+    - navigation.tabs
