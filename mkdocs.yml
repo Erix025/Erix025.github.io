@@ -1,0 +1,5 @@
+site_name: Eric025's Blog
+theme:
+  name: material
+plugins: 
+  - blog
