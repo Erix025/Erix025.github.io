@@ -5,6 +5,8 @@ nav:
   - index.md
   - Web相关:
     - 如何搭建个人博客 : Web/mkdocs.md
+  - 其他:
+    - 微信聊天记录分析 : Others/WeChatAnalysis.md
 
 repo_url: https://github.com/erix025/erix025.github.io
 repo_name: erix025.github.io
