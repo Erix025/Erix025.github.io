@@ -2,12 +2,17 @@ site_name: Eric025's Blog
 site_author: Eric025
 
 nav:
-  - 主页:
-    - index.md
+  - index.md
   - Web相关:
     - 如何搭建个人博客 : Web/mkdocs.md
 
+repo_url: https://github.com/erix025/erix025.github.io
+repo_name: erix025.github.io
+
 theme:
+  font:
+    text: Noto Sans Simplified Chinese
+    code: JetBrains Mono
   name: material
   features:
     - navigation.tabs
