@@ -11,13 +11,13 @@
 
 - 安装 MkDocs
 
-```bash
+```shell
 pip install mkdocs-material
 ```
 
 - 使用 MkDocs
 
-```bash
+```shell
 # 在当前目录创建一个新的 MkDocs 项目
 mkdocs new .
 # 预览，访问地址 http://localhost:8000
@@ -30,7 +30,7 @@ mkdocs serve
 - 在 `docs` 目录下创建 `.md` 文件，即博客的内容
 - 在 `mkdocs.yml` 中配置 `nav`，指定导航栏的内容。并通过 key-value 的形式指定导航栏的名称和对应的文件路径
 
-```yml
+```yaml
 nav:
   - Home: index.md
   - About: about.md
@@ -41,7 +41,7 @@ nav:
 
 - 在 `mkdocs.yml` 中配置 `theme`，指定主题
 
-```yml
+```yaml
 theme:
   name: material
 ```
@@ -50,7 +50,7 @@ theme:
 
 可以通过 GitHub Actions 实现自动部署，只需要在仓库的 `.github/workflows` 目录下创建一个 `.yml` 文件，例如 `ci.yml`，并在其中配置自动部署的流程
 
-```yml
+```yaml title=".github/workflows/ci.yml"
 name: ci
 on:
   push:
@@ -86,3 +86,7 @@ jobs:
 
 ![deploy branch setting](deploy_setting_light.png#only-light)
 ![deploy branch setting](deploy_setting_dark.png#only-dark)
+
+## References
+
+[MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
