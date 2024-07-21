@@ -4,9 +4,10 @@ site_author: Eric025
 nav:
   - index.md
   - Web相关:
-    - 如何搭建个人博客 : Web/mkdocs.md
+      - 如何搭建个人博客: Web/mkdocs.md
   - 其他:
-    - 微信聊天记录分析 : Others/WeChatAnalysis.md
+      - 微信聊天记录分析: Others/WeChatAnalysis.md
+      - Python库打包上传: Others/PythonPackup.md
 
 repo_url: https://github.com/erix025/erix025.github.io
 repo_name: erix025.github.io
@@ -19,12 +20,11 @@ theme:
   features:
     - navigation.tabs
     - content.code.copy
-  palette: 
-
+  palette:
     # Palette toggle for light mode
     - scheme: default
       toggle:
-        icon: material/brightness-7 
+        icon: material/brightness-7
         name: Switch to dark mode
 
     # Palette toggle for dark mode
@@ -32,7 +32,7 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-        
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
