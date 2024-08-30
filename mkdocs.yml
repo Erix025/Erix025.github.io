@@ -5,6 +5,8 @@ nav:
   - index.md
   - Web相关:
       - 如何搭建个人博客: Web/mkdocs.md
+  - 机器学习:
+      - Advanced Topics In Statistical Machine Learning: MachineLearning/oxford_summer.md
   - 其他:
       - 微信聊天记录分析: Others/WeChatAnalysis.md
       - Python库打包上传: Others/PythonPackup.md
