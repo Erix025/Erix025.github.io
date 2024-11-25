@@ -3,6 +3,10 @@ site_author: Eric025
 
 nav:
   - index.md
+  - Efficient AI:
+      - MIT 6.5940: 
+          - 课程介绍: EfficientAI/MIT6.5940/Introduction.md
+          - Pruning: EfficientAI/MIT6.5940/Pruning.md
   - Web相关:
       - 如何搭建个人博客: Web/mkdocs.md
   - 其他:
@@ -17,10 +21,12 @@ theme:
     text: Noto Sans Simplified Chinese
     code: JetBrains Mono
   name: material
+  color: pink
   features:
     - navigation.tabs
     - content.code.copy
   palette:
+    - primary: blue grey
     # Palette toggle for light mode
     - scheme: default
       toggle:
@@ -41,3 +47,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
