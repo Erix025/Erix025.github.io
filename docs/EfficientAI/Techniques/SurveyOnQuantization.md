@@ -103,11 +103,11 @@ OBS 本来是用于 pruning 的，核心想法是：将某个 weight 的值设�
 
 对 loss function 的微分进行泰勒展开，充分训练下没有一阶导项，忽略高阶微分项，最终得到 delta loss function 的表达式。
 
-![Tayler Expansion of Loss Function](SurveyOnQuantization.assets/obs_tayler.png)
+![Tayler Expansion of Loss Function](SurveyOnQuantization.assets/obs_tayler.png){:width="75%"}
 
 然后在 pruning 约束条件下对目标函数进行拉格朗日乘数法求解，最终得到两个关键表达式。
 
-![Two Key Expressions](SurveyOnQuantization.assets/obs_key_equations.png)
+![Two Key Expressions](SurveyOnQuantization.assets/obs_key_equations.png){:width="50%"}
 
 1. 对其他权重的变化量 $\delta_{\mathbf{W}}$（最后两个因子可以简化为 $H^{-1}$ 的第 q 列）
 2. 优化 q 对整个 loss 引起的变化 $L_q$ ，这个可以用来找到最佳的 q
@@ -116,7 +116,7 @@ OBS 本来是用于 pruning 的，核心想法是：将某个 weight 的值设�
 
 OBC 在 OBS 的基础上假设 Hessian 矩阵的每一行相对独立（基于参数独立假设），并提出了对 Hessian 的迭代更新算法，避免频繁对 Hessian 矩阵求逆。
 
-![Hessian Updating](SurveyOnQuantization.assets/obc_hessian_update.png)
+![Hessian Updating](SurveyOnQuantization.assets/obc_hessian_update.png){:width="50%"}
 
 而 OBQ 将 pruning 视为一种特殊的 quantization，从而将 OBC 改造为 quantization 算法。
 ![Two Key Expressions in OBQ](SurveyOnQuantization.assets/obq_key_equations.png)
@@ -228,7 +228,7 @@ AWQ 基于一个 observation: 保留 1% salient weights 不被量化可以显著
 
 在此基础上，AWQ 想要进一步量化 salient weights：利用 Activation-aware Scaling 来减小 salient weight 量化后的 error。
 
-![Activation-aware Scaling](SurveyOnQuantization.assets/awq_scaling.png)
+![Activation-aware Scaling](SurveyOnQuantization.assets/awq_scaling.png){:width="70%"}
 
 可以看到，当对 weight 和 input 分别施加相反的 scaling factor，最终的 error 会随着 s 的增大而减小。这便是 AWQ 的核心机制。
 
@@ -341,7 +341,7 @@ Reassembly 主要分为 disassembly 和 assembly 两步。
 第二个是在 KV Cache Compression 中判断 salient tokens 时，主流工作用的都是 accumulated attention score 作为 metrics，但这个标准会存在问题，没有考虑到每个 accumulated score 的 summation terms 数量不同，同时会受到 softmax 的归一化影响，所以是不合理的  
 为此，ZipCache 提出 normalized attention score，即在非零元素之间求 mean
 
-![Normalized Attention Score](SurveyOnQuantization.assets/zipcache_normalized_attention_score.png)
+![Normalized Attention Score](SurveyOnQuantization.assets/zipcache_normalized_attention_score.png){:width="50%"}
 
 同时还指出在计算 Salience 的时候需要计算整个 attention score matrix，这与 flash attention 不兼容。为此 ZipCache 提出对 tokens 进行 samples，以部分 tokens 对整个序列其他 tokens 的 attention scores 来进行近似。
 
