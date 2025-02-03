@@ -7,6 +7,8 @@ nav:
       - MIT 6.5940: 
           - 课程介绍: EfficientAI/MIT6.5940/Introduction.md
           - Pruning: EfficientAI/MIT6.5940/Pruning.md
+      - Efficient Techniques:
+          - 量化综述：从 GPTQ 到 ZIPCache: EfficientAI/Techniques/SurveyOnQuantization.md
   - Web相关:
       - 如何搭建个人博客: Web/mkdocs.md
   - 其他:
@@ -26,7 +28,7 @@ theme:
     - navigation.tabs
     - content.code.copy
   palette:
-    - primary: blue grey
+    - primary: red
     # Palette toggle for light mode
     - scheme: default
       toggle:
@@ -39,6 +41,17 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 
+plugins:
+  - statistics:
+      page_statistics: true
+      page_read_time: true
+      words_per_minute: 300
+  - git-revision-date-localized:
+      enable_creation_date: true
+      custom_format: "%Y-%m-%d"
+      exclude:
+        - index.md
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -50,5 +63,18 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.arithmatex:
+      generic: true
   - attr_list
   - md_in_html
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - styles/global.css
