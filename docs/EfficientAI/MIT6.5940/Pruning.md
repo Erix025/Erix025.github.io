@@ -21,14 +21,14 @@ In this way, we can reduce the number of computation as well as memory usage, an
 There are a few levels of pruning granularity:
 
 - **Fine-grained**: Prune individual weights in the model.
-    - **Pros**: More flexible, can prune any weight in the model. Thus it can reach higher sparsity at the same performance level.
-    - **Cons**: More difficult to implement, and may not be as efficient as coarse-grained pruning.
+  - **Pros**: More flexible, can prune any weight in the model. Thus it can reach higher sparsity at the same performance level.
+  - **Cons**: More difficult to implement, and may not be as efficient as coarse-grained pruning.
 - **Pattern-based**: Prune weights based on certain patterns, such as *N:M Sparsity*
-    - **Pros**: More efficient than fine-grained pruning. Can be implemented more easily and supported by hardware.
-    - **Cons**: Less flexible, may not be able to prune all the weights.
+  - **Pros**: More efficient than fine-grained pruning. Can be implemented more easily and supported by hardware.
+  - **Cons**: Less flexible, may not be able to prune all the weights.
 - **Channel Sparsity**: Prune entire channels in the model.
-    - **Pros**: More efficient than fine-grained pruning. Can be implemented more easily and supported by hardware. Just a smaller dense matrix.
-    - **Cons**: Less flexible, may not be able to prune all the weights.
+  - **Pros**: More efficient than fine-grained pruning. Can be implemented more easily and supported by hardware. Just a smaller dense matrix.
+  - **Cons**: Less flexible, may not be able to prune all the weights.
 
 总的来说，不同的 Pruning Granularity 主要是 Flexibility 和 Hardware Efficiency 之间的 trade-off. 更细粒度更灵活，但硬件难以支持；更粗粒度硬件更容易实现，但灵活性更差。
 
@@ -60,7 +60,7 @@ $$
 
 ### Pruning Neuron
 
-对神经元进行 Pruning，本质上就是对涉及到该神经元的 Weight 进行 Pruning （可以看作一种 coarse-grained Pruning）。Pruning Neuron 的一个好处是可以减少模型的复杂度，减少计算量。
+对神经元进行 Pruning，本质上就是对涉及到该神经元的 Weight 进行 Pruning（可以看作一种 coarse-grained Pruning）。Pruning Neuron 的一个好处是可以减少模型的复杂度，减少计算量。
 
 而他的 Criterion 不能对 Weight 进行分析，而是对 Activation 进行分析，即对神经元的输出进行分析。具体来说，可以有以下几种方法：
 
@@ -73,7 +73,7 @@ $$
 
 通过只对一层进行 Pruning，可以分析每一层对 pruning 的敏感程度。
 
-![Layer Sensitivity Analysis](image.png)
+![Layer Sensitivity Analysis](assets/pruning_sensitivity_analysis.png)
 
 这种方法不一定有效，因为它没有考虑到不同层之间的相互影响。
 
