@@ -1,6 +1,6 @@
-# 量化综述：从 GPTQ 到 ZIPCache
+# 量化学习笔记：从 GPTQ 到 ZIPCache
 
-这篇博客将从量化的概念开始，到介绍 GPTQ、AWQ、QLoRA、QLLM 和 ZIPCache 等量化技术，呈现 Overview of Quantization。
+这篇笔记将从量化的概念开始，到介绍 GPTQ、AWQ、QLoRA、QLLM 和 ZIPCache 等量化技术，呈现 Overview of Quantization。
 
 ## 什么是量化？
 

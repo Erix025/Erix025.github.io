@@ -8,12 +8,12 @@ nav:
           - 课程介绍: EfficientAI/MIT6.5940/Introduction.md
           - Pruning: EfficientAI/MIT6.5940/Pruning.md
       - Efficient Techniques:
-          - 量化综述：从 GPTQ 到 ZIPCache: EfficientAI/Techniques/SurveyOnQuantization.md
-  - Web相关:
-      - 如何搭建个人博客: Web/mkdocs.md
-  - 其他:
-      - 微信聊天记录分析: Others/WeChatAnalysis.md
-      - Python库打包上传: Others/PythonPackup.md
+          - 量化学习笔记：从 GPTQ 到 ZIPCache: EfficientAI/Techniques/SurveyOnQuantization.md
+  # - Web相关:
+  #     - 如何搭建个人博客: Web/mkdocs.md
+  # - 其他:
+  #     - 微信聊天记录分析: Others/WeChatAnalysis.md
+  #     - Python库打包上传: Others/PythonPackup.md
 
 repo_url: https://github.com/erix025/erix025.github.io
 repo_name: erix025.github.io
