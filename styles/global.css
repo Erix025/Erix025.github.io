@@ -1,0 +1,14 @@
+@font-face {
+    font-family: '霞鹜文楷';
+    src: url('../fonts/霞鹜文楷.ttf') format('truetype');
+}
+
+/* 设置全局字体 */
+body {
+    font-family: '霞鹜文楷', sans-serif; /* 替换为你想要的字体 */
+}
+
+img{
+    display:block;
+    margin:0 auto;
+}
