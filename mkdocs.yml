@@ -4,11 +4,12 @@ site_author: Eric025
 nav:
   - index.md
   - Efficient AI:
-      - MIT 6.5940: 
+      - MIT 6.5940:
           - 课程介绍: EfficientAI/MIT6.5940/Introduction.md
           - Pruning: EfficientAI/MIT6.5940/Pruning.md
       - Efficient Techniques:
           - 量化学习笔记：从 GPTQ 到 ZIPCache: EfficientAI/Techniques/SurveyOnQuantization.md
+      - 大模型并行策略: EfficientAI/Parallelism.md
   # - Web相关:
   #     - 如何搭建个人博客: Web/mkdocs.md
   # - 其他:
