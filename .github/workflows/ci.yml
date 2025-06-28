@@ -26,4 +26,13 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install -e .
-      - run: mkdocs gh-deploy --force
+      - run: mkdocs build --site-dir ./public # 构建到 public 目录而不是直接部署
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public # 发布 public 目录内容
+          publish_branch: gh-pages
+          force_orphan: true
+          keep_files: false
+          cname: "blogs.erix025.me" # 你的自定义域名
