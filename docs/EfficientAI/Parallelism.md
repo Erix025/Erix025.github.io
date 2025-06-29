@@ -51,6 +51,10 @@
 
 纵然 TP 能够在 throughput 和 latency 两个维度都有很好的提升，但这个前提是建立在通信带宽和延迟非常优秀的情况下。由于 TP 会有非常大的通信开销，往往需要使用高速互联网络（如 Infini bands, NV links）等方式才能够在 scaling out 上使用 TP 取得很好的提升。
 
+!!! question
+
+    下一步探索：TP 的具体实现（Megatron-LM）
+
 ### Sequence Parallelism
 
 Sequence Parallelism 在 TP 的基础上继续在 input channel 维度进行切分。相比于 TP 在 output channel 进行切分后需要对 result 进行 gather 以参与下一次运算（例如 MLP 的两层 Linear），SP 可以在保持 input channel 被切分的情况下继续参与下一次运算，从而减小集合通信的次数。
@@ -63,15 +67,52 @@ Sequence Parallelism 在 TP 的基础上继续在 input channel 维度进行切�
 - Communication：同样需要对 activation 进行集合通信，但相比 TP 次数减少。
 - Throughput & Latency：和 TP 一样同样能够利用更多计算资源进行计算，提升 throughput，减小 latency。
 
+!!! question
+
+    下一步探索：SP 的不同实现
+
+    - Megatron-LM(TP+SP)
+    - DeepSpeed-Ulysses
+    - Ring-Attention
+    - USP: Ulysses+Ring
+
 ### Expert Parallelism
+
+Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。MoE 模型通常包含多个专家（Expert），每个专家是一个 FFN（Feed Forward Network），在每次前向过程中只会激活其中的一部分专家。
+
+![MoE](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/blog/moe/00_switch_transformer.png)
+
+而在 MoE 模型中，主要的显存压力在于专家参数上。因此通过将专家分布到多个 device 上来实现 Expert Parallelism，从而减小显存占用。
+
+- Memory 占用：能够将 MoE 模型权重拆分到多个 device 上
+- Communication：在每次 FFN 专家层计算结束后需要进行 all-gather
+- Throughput&Latency：在专家层计算时利用更多的计算资源，减小专家层的计算时间，从而提高 Throughput 和 Latency。
+
+!!! question
+
+    下一步探索的问题：
+
+    - 这里会遇到一个问题就是只有 FFN 是在做并行的，要完全利用就要求在其他阶段采用混合的并行策略。这个具体是怎么实现的？（可以看看 DeepEP）
+    - 在具体 serving 的时候，不同的 request 会走到不同的 stage，这样是否会导致一张卡上同时需要跑 Attention 的 TP 和 FFN 的 EP？还需要对具体 EP 框架和并行策略做探索（看看 DeepSeek-V3）
 
 ## 训练
 
-训练阶段的并行策略主要有以下几种：
+训练的并行策略相较于推理阶段而言，需要额外考虑反向传播的问题。
 
-- **数据并行（Data Parallelism）**：将数据分成多个 batch，在不同的设备上处理。每个设备上运行相同的模型副本。
-- **张量并行（Tensor Parallelism）**：将模型的参数分布到不同的设备上，每个设备处理一部分参数。适用于大模型。
-- **流水线并行（Pipeline Parallelism）**：将模型分成多个阶段，每个阶段在不同的设备上处理。每个设备上运行模型的不同部分。
+### Data Parallelism
+
+对于 Data Parallelism，需要考虑以下几个问题：
+
+1. 如何汇总从不同数据中学习到的成果？
+2. 如何保证多份模型参数拷贝的一致性？
+
+### Distributed Data Parallelism
+
+DDP 使用一种非常直接的方式解决上述问题，那就是在各自反向传播得到梯度后，通过 all-reduce 求各个数据对参数更新的梯度平均值，最后各自根据这份相同的梯度对模型进行更新即可。
+
+虽然它解决了这两个问题，但是每个 device 上都需要保存完整的梯度和优化器状态，占用了大量显存。
+
+### ZeRO
 
 ## References
 
