@@ -26,20 +26,25 @@ theme:
     text: Noto Sans Simplified Chinese
     code: JetBrains Mono
   name: material
-  color: pink
   features:
     - navigation.tabs
+    - navigation.top
+    - navigation.sections
     - content.code.copy
+    - content.code.annotate
   palette:
-    - primary: red
-    # Palette toggle for light mode
+    # Palette toggle for light mode (Apex Palette - 工作/严谨)
     - scheme: default
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
 
     # Palette toggle for dark mode
     - scheme: slate
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
