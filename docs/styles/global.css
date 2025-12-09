@@ -331,13 +331,13 @@ img {
 
 /* 二级导航 */
 .md-nav__item .md-nav__item {
-    padding-left: 0.8rem;
+    padding-left: 0.5rem;
 }
 
 .md-nav__item .md-nav__item .md-nav__link {
     font-size: 0.85rem;
     color: var(--color-text-soft);
-    padding-left: 1rem;
+    padding-left: 0.8rem;
 }
 
 [data-md-color-scheme="slate"] .md-nav__item .md-nav__item .md-nav__link {
@@ -346,13 +346,13 @@ img {
 
 /* 三级导航 */
 .md-nav__item .md-nav__item .md-nav__item {
-    padding-left: 1rem;
+    padding-left: 0.6rem;
 }
 
 .md-nav__item .md-nav__item .md-nav__item .md-nav__link {
     font-size: 0.8rem;
     color: var(--color-text-soft);
-    padding-left: 1.4rem;
+    padding-left: 1.2rem;
 }
 
 /* 激活状态 */
@@ -388,6 +388,40 @@ img {
 
 [data-md-color-scheme="slate"] .md-nav__item--active > .md-nav__link {
     color: #5A9FD4;
+}
+
+/* 右侧目录（Table of Contents）缩进优化 */
+.md-sidebar--secondary .md-nav__item {
+    padding-left: 0;
+}
+
+.md-sidebar--secondary .md-nav__item .md-nav__item {
+    padding-left: 0.5rem;
+}
+
+.md-sidebar--secondary .md-nav__item .md-nav__item .md-nav__item {
+    padding-left: 0.5rem;
+}
+
+.md-sidebar--secondary .md-nav__link {
+    padding-left: 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* 右侧目录字号层次 */
+.md-sidebar--secondary .md-nav__list > .md-nav__item > .md-nav__link {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.md-sidebar--secondary .md-nav__item .md-nav__item > .md-nav__link {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.md-sidebar--secondary .md-nav__item .md-nav__item .md-nav__item > .md-nav__link {
+    font-size: 0.7rem;
+    font-weight: 400;
 }
 
 /* 搜索框 */
