@@ -1,5 +1,9 @@
 # Pruning
 
+> 写在 2024 年 11 月，在线上学习 [MIT6.5940 TinyML and Efficient Deep Learning Computing](https://hanlab.mit.edu/courses/2024-fall-65940) 课程时的笔记，整理自课程视频和讲义。很惭愧后续一些现在看来更主流的技术（如 Quantization, LLM Serving 等）没有及时更新笔记，后续如果有机会的话希望能够以更成熟的视角重新整理一遍这些内容。
+>
+>—— Xi Lin, 2025.12
+
 !!! note "对应课程内容"
 
     MIT6.5940 Lecture 3-4 内容
@@ -93,14 +97,6 @@ Finetune 其实就是对 Pruned 模型进行重新训练，但是需要注意的
 一个基本的思路是先进行 Pruning，再进行 Finetune，然后再在 Finetune 之后的模型上进行 Pruning，然后再进行 Finetune，如此循环。
 
 ![Loop of Pruning and Finetune](assets/pruning_finetune_loop.png)
-
-## Hardware Supports for Pruning
-
-### EIE
-
-### TensorCore: M:N Weight Sparsity
-
-### TorchSparse and PointAcc
 
 ## References
 

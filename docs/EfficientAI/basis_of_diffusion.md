@@ -1,5 +1,9 @@
 # Basis of Diffusion Model
 
+> 写于 2025 年 7 月，整理自我从零开始学习 Diffusion 模型的笔记过程。目前这里还是比较基础的内容，正在整理更多的内容（如 Score-based Model, Latent Diffusion, Flow-based Model 等）。
+>
+>—— Xi Lin, 2025.12
+
 这篇博客记录我的 Diffusion 模型学习过程，主要关注在对 Diffusion 模型架构的理解。
 
 ## Derivation of Diffusion Model
