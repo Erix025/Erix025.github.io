@@ -12,6 +12,7 @@ nav:
       - 大模型并行策略: EfficientAI/Parallelism.md
       - Basis of Diffusion Models:
           - 基础知识: EfficientAI/basis_of_diffusion.md
+      - ZJUSCT Efficient LLM Infer 分享: EfficientAI/sct-llm-talk.md
   # - Web相关:
   #     - 如何搭建个人博客: Web/mkdocs.md
   # - 其他:
