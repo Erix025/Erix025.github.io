@@ -1,0 +1,1957 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Eric025">
+      
+      
+      
+        <link rel="prev" href="../../basis_of_diffusion/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>ZJUSCT Efficient LLM Infer 分享 - Eric025's Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans Simplified Chinese";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../styles/global.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#an-introduction-to-efficient-llm-inference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Eric025&#39;s Blog" class="md-header__button md-logo" aria-label="Eric025's Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Eric025's Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ZJUSCT Efficient LLM Infer 分享
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/erix025/erix025.github.io" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    erix025.github.io
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Eric025 的个人博客
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../MIT6.5940/Introduction/" class="md-tabs__link">
+          
+  
+  
+  Efficient AI
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Eric025&#39;s Blog" class="md-nav__button md-logo" aria-label="Eric025's Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Eric025's Blog
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/erix025/erix025.github.io" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    erix025.github.io
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eric025 的个人博客
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficient AI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Efficient AI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MIT 6.5940
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MIT 6.5940
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../MIT6.5940/Introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    课程介绍
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../MIT6.5940/Pruning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pruning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficient Techniques
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Efficient Techniques
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Techniques/SurveyOnQuantization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    量化学习笔记：从 GPTQ 到 ZIPCache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Parallelism/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    大模型并行策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basis of Diffusion Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Basis of Diffusion Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basis_of_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础知识
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZJUSCT Efficient LLM Infer 分享
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZJUSCT Efficient LLM Infer 分享
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#llm-inference-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Inference Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LLM Inference Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-in-llm-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core in LLM Inference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core in LLM Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-ar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview of AR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fundamental-components-in-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fundamental Components in LLM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefilling-and-decoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefilling and Decoding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prefilling and Decoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefilling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefilling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenges-in-llm-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges in LLM Inference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-compression-and-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Compression and Parallelism
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Model Compression and Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quantization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#weight-only-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weight-Only Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weight-activation-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weight-Activation Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nowadays-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nowadays' Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parallelism
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tensor-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tensor Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sequence-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sequence Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expert-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expert Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#long-context-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-Context Inference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Long-Context Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-compression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Compression
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="KV Cache Compression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#more-than-mha" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More than MHA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Eviction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-merging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Merging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sparse-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sparse Attention
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sparse Attention">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-sparse-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Sparse Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-sparse-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Sparse Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#llm-inference-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Inference Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LLM Inference Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-in-llm-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core in LLM Inference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core in LLM Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-ar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview of AR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fundamental-components-in-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fundamental Components in LLM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefilling-and-decoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefilling and Decoding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prefilling and Decoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefilling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefilling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenges-in-llm-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges in LLM Inference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-compression-and-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Compression and Parallelism
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Model Compression and Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quantization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#weight-only-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weight-Only Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weight-activation-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weight-Activation Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nowadays-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nowadays' Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parallelism
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tensor-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tensor Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sequence-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sequence Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expert-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expert Parallelism
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#long-context-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-Context Inference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Long-Context Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-compression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Compression
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="KV Cache Compression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#more-than-mha" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More than MHA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Eviction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-quantization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Quantization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-cache-merging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV Cache Merging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sparse-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sparse Attention
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sparse Attention">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-sparse-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Sparse Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-sparse-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Sparse Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="an-introduction-to-efficient-llm-inference">An Introduction to Efficient LLM Inference</h1>
+<div style="margin-top: -30px; font-size: 0.75em; opacity: 0.7;">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10h-2a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8zm6.78 1a.7.7 0 0 0-.48.2l-1.22 1.21 2.5 2.5L20.8 5.7c.26-.26.26-.7 0-.95L19.25 3.2c-.13-.13-.3-.2-.47-.2m-2.41 2.12L9 12.5V15h2.5l7.37-7.38z"/></svg></span> 约 6692 个字 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 17H7V3h14m0-2H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2M3 5H1v16a2 2 0 0 0 2 2h16v-2H3m12.96-10.71-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg></span> 12 张图片 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20c4.42 0 8-3.58 8-8s-3.58-8-8-8-8 3.58-8 8 3.58 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10C6.47 22 2 17.5 2 12S6.5 2 12 2m.5 11H11V7h1.5v4.26l3.7-2.13.75 1.3z"/></svg></span> 预计阅读时间 22 分钟</p>
+</div>
+<blockquote>
+<p>本文为一次面向 <a href="https://www.zjusct.io/">ZJUSCT</a> 内部分享的内容整理，旨在介绍大模型推理中常用的高效推理手段，包括量化、并行、稀疏注意力等技术。</p>
+</blockquote>
+<h2 id="llm-inference-overview">LLM Inference Overview</h2>
+<h3 id="core-in-llm-inference">Core in LLM Inference</h3>
+<h4 id="overview-of-ar">Overview of AR</h4>
+<p>首先我们来梳理一下 LLM 推理中的关键过程。在大家使用 LLM 的时候，会发现他是一个一个词逐渐输出的。</p>
+<p>这是因为 LLM 的整个过程就是一个 Next-Token-Prediction。每一次前向其实是把一个序列输入进入，预测整个序列的下一个词，然后不断重复这个过程。</p>
+<div class="arithmatex">\[
+X_{t+1} = f(X_t)\\
+X_t=[x_0, \cdots, x_p, x_{p+1}, \cdots, x_{p+t}]
+\]</div>
+<p>每一个 <span class="arithmatex">\(x_i\)</span> 都是一个 token 对应的向量 (embedding)。这种通过不断调用 <span class="arithmatex">\(f\)</span> 来实现序列理解生成的模式我们也叫做 <strong>自回归</strong> (Auto Regressive)。</p>
+<h4 id="fundamental-components-in-llm">Fundamental Components in LLM</h4>
+<p>目前主流的 LLM 由以下几个组件构成：</p>
+<ol>
+<li>Tokenizer &amp; Input Embedding</li>
+<li>Transformer</li>
+<li><code>lm_head</code> and Sampler</li>
+</ol>
+<p>一个文本序列经过 Tokenizer 分成一个个 token 得到 token id 序列，然后经过 Input Embedding 得到各自的词向量。然后通过最核心的 Transformer，最终经过 <code>lm_head</code> 得到词表中每个词的概率并由 Sampler 进行采样得到最终的输出 token。</p>
+<p>而其中绝大部分的参数量和计算量都集中在 Transformer 这个部分。因此我们今天也主要针对这部分优化进行展开。</p>
+<p>Transformer 大家想必不陌生，最初 Transformer 的设计是由 Encoder 和 Decoder 两个部分组成。而目前主流的 LLM 都是采用 Decoder Only 的设计。</p>
+<figure>
+  <img src="../transformer.png" alt="Transformer 示意图" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Transformer 示意图</b>（来源：<a href="https://arxiv.org/abs/1706.03762">Vaswani et al., 2017</a>）
+  </figcaption>
+</figure>
+
+<p>Transformer 有若干层，其中每一层都有一个 Self Attention 和一个 MLP。</p>
+<p>对于 Self Attention，最核心的就是 Attention 机制。他是通过计算 Q 和 K 的相关性得到 attention score，然后加权求和 V 得到最终的输出。</p>
+<p>而 Self Attention 他的 Self 关键在于怎么得到 QKV。QKV 在这里都是通过 x 经过三个 proj 得到的。因而叫做 self attention。与之相对的 Cross Attention 则是 Q 和 KV 来源不相同，这里不过多展开。</p>
+<figure>
+  <img src="../self-attention.png" alt="Self Attention in Transformer" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Self Attention in Transformer</b>
+  </figcaption>
+</figure>
+
+<p>Attention 计算的复杂度是我们比较关心的，已知 QKV 的形状都是 [n, d]，那么如果只关注矩阵乘的开销，我们会得到一个 <span class="arithmatex">\(O(n^2d)\)</span> 的复杂度，当 <span class="arithmatex">\(n \gg d\)</span> 时（即面对序列长度很大的场景），Attention 的复杂度将变为 <span class="arithmatex">\(O(n^2)\)</span>，这带来了大量的计算开销，也是我们后续优化的重点。</p>
+<p>这里还要补充一下 Causal Mask 的内容。因为在 LLM 中，我们希望模型根据前面的内容预测后面的知识，因此不希望其看到后面的内容。所以我们使用一个下三角矩阵作为 mask，使 Q 中的每一个 token 只能看到 K 中在他之前的 token。</p>
+<figure>
+  <img src="../attention.png" alt="Attention 示意图" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Attention 示意图</b>（来源：<a href="https://peterchng.com/blog/2024/08/19/ring-attention-scaling-attention-across-multiple-devices/">Peter Chng, 2024</a>）
+  </figcaption>
+</figure>
+
+<p>而 MLP 部分则是大家熟悉的两层 Linear 加一个激活函数的组合。</p>
+<p>近年来尤其是 DeepSeek-V3/R1 以来，MoE(Mixture of Expert)模型成为主流。即使用多个 MLP 来存储模型知识，而在实际推理时只调用其中 k 个 MLP，实现了在模型规模增大的同时不等比例增加推理开销。</p>
+<figure>
+  <img src="../moe.png" alt="MoE 示意图" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>MoE 示意图</b>（来源：<a href="https://arxiv.org/abs/2101.03961">Fedus et al., 2021</a>）
+  </figcaption>
+</figure>
+
+<h3 id="prefilling-and-decoding">Prefilling and Decoding</h3>
+<p>理解了 Transformer 的结构后，我们来看实际推理时是如何运行的。由于 LLM 是 自回归（Auto-Regressive） 模型，生成 <span class="arithmatex">\(N\)</span> 个 token 就需要调用 <span class="arithmatex">\(N\)</span> 次模型。但在这 <span class="arithmatex">\(N\)</span> 次调用中，第一步和后续步骤的计算逻辑存在巨大的非对称性，因此我们将其分为两个阶段：Prefilling &amp; Decoding</p>
+<h4 id="prefilling">Prefilling</h4>
+<p>当你输入一段 Prompt（长度为 <span class="arithmatex">\(n\)</span>）时，模型需要一次性处理所有输入 token。</p>
+<ul>
+<li>特点：这是一个计算密集型的过程，其在整个 transformer 中流动的 x 形状是 [n, d]。虽然我们最终只需要最后一个 token 预测出的概率分布来生成第一个新 token，但为了得到这个结果，前面的 <span class="arithmatex">\(n-1\)</span> 个 token 的计算是必经之路。</li>
+<li>产物：在这个阶段结束时，我们不仅得到了第一个生成的 token，还得到了输入序列所有 token 的 <span class="arithmatex">\(K\)</span> 和 <span class="arithmatex">\(V\)</span> 向量。</li>
+</ul>
+<h4 id="decoding">Decoding</h4>
+<p>从生成第二个新 token 开始，推理进入了逐个生成的循环。</p>
+<p>理论上，生成第 <span class="arithmatex">\(n+i\)</span> 个 token 时，我们需要输入前面所有的 <span class="arithmatex">\(n+i-1\)</span> 个 token。但你会发现一个明显的计算冗余：前 <span class="arithmatex">\(n+i-2\)</span> 个 token 的 <span class="arithmatex">\(K\)</span> 和 <span class="arithmatex">\(V\)</span> 矩阵在之前的循环中已经计算过了，且由于 Causal Mask 的存在，旧 token 的特征并不会受到新 token 的影响。因此，我们不再重新计算整个序列，而是每次只输入上一步产出的那一个 token。</p>
+<p>这个阶段的特点是，由于只需要输入一个 token，此时 x 的形状将会是 [1, d]，因此通常情况下这个阶段是 memory-bound 的。</p>
+<h4 id="kv-cache">KV Cache</h4>
+<p>这里就引出了推理优化的第一个关键点。如果在 Decoding 阶段只输入一个 token，Attention 层如何计算它与历史 token 的相关性？为了解决这个问题，我们需要在 Prefilling 阶段将所有 token 计算出的 <span class="arithmatex">\(K\)</span> 和 <span class="arithmatex">\(V\)</span> 向量缓存在显存中，这就是 KV Cache。在 Decoding 的每一步，模型只需要计算当前新 token 的 <span class="arithmatex">\(K_{new}\)</span> 和 <span class="arithmatex">\(V_{new}\)</span>。将其追加（Append）到 KV Cache 中。依靠缓存的“历史记忆”，当前 token 就能通过 Attention 看到整个上下文。</p>
+<h3 id="challenges-in-llm-inference">Challenges in LLM Inference</h3>
+<p>随着模型规模的增大，LLM 推理面临着以下几个挑战：</p>
+<ol>
+<li>模型参数量大：在模型大小不断 scale up 的过程下，当前主流模型参数已经向 &gt;1T 级别迈进，这一方面在有限显存资源下的推理变得困难，另一方面在前向计算时对权重的访存开销也大幅增加。</li>
+<li>序列长度大：在实际应用中，上下文的长度需求不断增加。从应用场景看，一些如文档理解、代码生成等任务让 prefilling 阶段的输入长度达到 10k+ 已经变得常见。而在 decoding 阶段，自 DeepSeek-R1 以来 thinking model 和 agent 等应用场景也让生成长度不断增加。这些都让推理的计算和内存开销大幅增加。</li>
+</ol>
+<p>围绕这两个问题，这几年大家在 LLM 推理中也做了很多一些工作，今天的分享我会抛砖引玉式地介绍一下他们，感兴趣的同学可以顺着这个脉络进一步了解。</p>
+<h2 id="model-compression-and-parallelism">Model Compression and Parallelism</h2>
+<h3 id="quantization">Quantization</h3>
+<p>大家在之前的比赛中如果遇到 AI 相关的赛题，或多或少会接触到<strong>量化 (Quantization)</strong> 这个概念。</p>
+<p>量化最开始的 Motivation 是，大家发现在深度学习当中，精度并不是那么的重要。一是决定一个模型 capacity 的要素除了每个权重的精度还有权重数量、模型结构等等，另一个是经过额外的训练后模型也能够弥补由于精度表示误差所带来的损失。因此低比特模型量化就成为目前大模型训练/推理加速中的一个重要手段。</p>
+<p>量化最核心的概念就是用低比特数据类型来表示原来的数据。量化的过程就是将数值从高比特表示向低比特表示映射的过程，这是一个单向的、有损的过程。</p>
+<figure>
+  <img src="../dtype.png" alt="数据类型" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>数据类型</b>
+  </figcaption>
+</figure>
+<p>目前主流的量化方法是采用线性映射的方式，这里会引入两个量化参数 scale 和 zero_point。通过这两个参数，我们能够将一组数值从高比特表示映射到低比特表示。并且能够通过“反量化”这个过程再将其还原到原来的表示（当然还原后肯定会引入误差，因为低比特表示的取值可能数少于高比特表示，这意味着高比特表示下两个不一样的数值有可能映射到同一个低比特表示，从而带来 error）</p>
+<figure>
+  <img src="../linear-quant.png" alt="线性映射示意图">
+  <figcaption align="center">
+    <b>线性映射示意图</b> 来源：<a href="https://hanlab.mit.edu/courses/2024-fall-65940">MIT 6.5940</a>）
+  </figcaption>
+</figure>
+
+<p>因此量化的过程就是给定一组数据，计算他们的 scale 和 zero_point，然后据此计算低比特表示 x_q，最终返回 (scale, zero_point, x_q)。</p>
+<p>所以这里我们会发现，从存储空间上看，量化后的压缩比并不完全等于前后数据类型的比特数之比，因为还有量化参数所带来的额外占用。那么这里就会引入量化的另一个内容：量化粒度（Granularity）。</p>
+<p>量化粒度他决定了多少数值共用同一组量化参数。例如如果用 per-tensor 的粒度去做，那么一整个 weight tensor 只会共用同一组量化参数。这确实会引入较小的 overhead，但是与此同时带来的问题也是表示精度的下降。如下面这张图所示，这是某个 activation 矩阵在 dimension 维度和 token 的数值分布情况。可以看到整体的数值分布范围是非常大的，如果使用 per tensor 的粒度，那么映射之后一些数值差异小的地方会被映射到同一数值，这时候产生的 error 就会非常大。而我们如果逐个 channel 去看，会发现他们的数值范围其实只局限在一个更小的范围，如果我们 per-channel 而不是 per-tensor 地去做量化，虽然量化参数的数量增多了，但是同时也减少了量化前后的损失。因此量化精度的选择实际上是一个量化参数 overhead 和量化精度损失之间的一个取舍。</p>
+<p>当然这里的 per-channel 只是举一个例子，实际的量化粒度会更复杂，例如目前主流的方案其实是通过 per-group 的粒度去做，例如将 128 个数值划分为一组去共享一个量化参数来去做。</p>
+<figure>
+  <img src="../outlier-channels.png" alt="Outlier among Channels" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Outlier among Channels</b> 来源：<a href="https://arxiv.org/abs/2211.10438">Xiao et al., 2022</a>）
+  </figcaption>
+</figure>
+
+<p>讲完量化的一个基本概念，那么我们来看看他是怎么用到推理加速当中的。</p>
+<h4 id="weight-only-quantization">Weight-Only Quantization</h4>
+<p>在早期，大家最开始在权重上做量化探索，即只量化权重而不量化 activation。这样的好处是可以显著减小大模型权重的显存占用，同时能够减少前向过程中对权重的访存量。</p>
+<p>但与此同时，如果只对权重做量化，在实际计算中其实无法利用低比特的计算单元，因为此时 activation 还是 fp16/bf16 的。因此在 weight only 下，会先将权重进行反量化，得到高比特表示的 weight，再和 activation 在高比特下进行乘法。</p>
+<p>目前在 LLM 上主流的量化方法已经可以做到 training-free 的 W4A16 近乎无损。</p>
+<h4 id="weight-activation-quantization">Weight-Activation Quantization</h4>
+<p>在 weight only 下取得巨大成功后，大家就开始继续在 activation 上进行探索。因为如果将 activation 同时进行量化，那么就可以充分地利用硬件上的低比特计算单元，从而在计算上获得更好的加速效果。</p>
+<p>例如我们当时 ASC25 DeepSeek 在 CPU 上的方案就是一个 W4A8 的方案。即 weight 使用 4-bit 量化，然后在计算时 dequant 到 8-bit，利用 8-bit 的 AMX/AVX 计算单元进行计算。</p>
+<p>当然对 activation 的量化也会引入更大的精度损失。目前主流效果较好的量化方法还是基于 W4A8 在做，W4A4 目前也已经有一些工作在推进，尤其是在 NVFP4 这种数据类型出来之后。</p>
+<h4 id="nowadays-quantization">Nowadays' Quantization</h4>
+<p>上面介绍的量化貌似其实是一个很简单的东西，只要挑好数据类型和量化粒度就能开干了，那么学术界的一堆量化工作在做什么呢？正在追求如何“既要又要”。</p>
+<p>在 LLM 上，大家发现有很多的 outlier，即那些数值离群点。他们会影响到 scale/zeropoint 的计算，进而带来更大的量化损失。因此大家推出了一系列的工作来想方法处理 outlier 减少量化损失。例如提出缩放来解决的 SmoothQuant 和利用旋转矩阵来解决的 SpinQuant 等。这里我不再过多展开，大家可以进一步了解。</p>
+<h3 id="parallelism">Parallelism</h3>
+<p>讲完了量化，我们来讲另一个维度加速的方法。围绕着刚刚提的模型大的问题，量化是从压缩模型大小的角度，而并行则是从将模型推理过程分散到多个设备来利用更多计算/存储资源的角度来加速模型推理。</p>
+<p>推理阶段的并行策略主要有以下几种：</p>
+<ul>
+<li><strong>数据并行（Data Parallelism）</strong>：将数据分成多个 batch，在不同的设备上处理。</li>
+<li><strong>流水线并行（Pipeline Parallelism）</strong>：将模型分成多个阶段，每个阶段在不同的设备上处理。</li>
+<li><strong>张量并行（Tensor Parallelism）</strong>：将模型的参数分布到不同的设备上，每个设备处理一部分参数。</li>
+<li><strong>序列并行（Sequence Parallelism）</strong>：将长序列分成多个短序列，在不同的设备上处理。</li>
+<li><strong>专家并行（Expert Parallelism）</strong>：将模型分成多个专家，每个专家在不同的设备上处理。针对于 MoE（Mixture of Experts）模型。</li>
+</ul>
+<p>由于推理阶段只需要考虑模型的 forward 过程，因此并行策略的实现会相对简单。</p>
+<h4 id="data-parallelism">Data Parallelism</h4>
+<p>推理阶段的数据并行其实比较简单。他的关键是以 request 作为并行拆分的最小单位，将不同的 request 分布到不同的 device 上进行推理。</p>
+<ul>
+<li>Memory 占用：每个 device 上有完整的一份模型副本。</li>
+<li>Communication：只在每条 request 的推理开始 / 结束会有通信，而且只需要对最终的 input / output 进行通信，通信量小。</li>
+<li>Throughput：当同时需要推理的 request 数接近于 infinity 时，增大并行度对 throughput 的增益是接近线性的（通信量小）</li>
+<li>Latency：并行度的增加对 latency 不会有正面效果，因为每个 request 分到的计算资源是一致的。</li>
+</ul>
+<h4 id="pipeline-parallelism">Pipeline Parallelism</h4>
+<p>流水线并行是将单次前向过程划分为多个 stage，以 stage 作为单位进行拆分，将不同的 stage 分布到不同的 device 上进行推理。</p>
+<ul>
+<li>Memory 占用：每个 device 上只有其所负责的 stage 对应的模型参数。</li>
+<li>Communication：在单个机器所负责的 device 完成后会发生通信，需要将 hidden states 传递给后续阶段的 device。</li>
+<li>Throughput：在理想状态下，某一时刻流水线中所有 device 都在进行计算，总吞吐量会增加，类比 CPU 的流水线。</li>
+<li>Latency：Latency 会下降，因为对于每个 request 而言，每次都只有一个 device 的计算资源参与前向过程，并且还有 device 间通信带来的 overhead。</li>
+</ul>
+<p>相比于 Data Parallelism，其对于 throughput 的提升会相对较低。但 PP 的优势是他能够拆分模型权重到不同的 device 上，从而能够在多个 device 上部署规模较大的模型。</p>
+<h4 id="tensor-parallelism">Tensor Parallelism</h4>
+<p><img alt="Tensor Parallelism" src="https://docs.nvidia.com/nemo-framework/user-guide/latest/_images/tp2.png" /></p>
+<p>和 PP 一样，Tensor Parallelism 也是一种拆分模型权重的并行方法（Model Parallelism），但是它拆分的粒度会更细。TP 是针对每个模型权重张量 <span class="arithmatex">\(W\)</span> 进行拆分。</p>
+<p><img alt="TP in GEMM" src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/tgi/TP.png" /></p>
+<p>以一个简单的 Linear 为例，TP 是将 weight 在 output channel 这个维度上进行切分并分布到多个 device 上，计算出结果后再将结果 gather 起来。</p>
+<ul>
+<li>Memory 占用：能够将模型权重拆分到多个 device 上，且拆分的粒度比 PP 更细。</li>
+<li>Communication：在 TP 中存在大量的 collective communication，因为往往输出需要在 output channel 这个维度 gather 在一起。</li>
+<li>Throughput：TP 能够通过利用更多计算资源对单个 request 进行计算，从而减小单个 request 的时间，提升 throughput。</li>
+<li>Latency：如上述，单个 request 利用的计算资源更多了，latency 会大大减小。</li>
+</ul>
+<p>纵然 TP 能够在 throughput 和 latency 两个维度都有很好的提升，但这个前提是建立在通信带宽和延迟非常优秀的情况下。由于 TP 会有非常大的通信开销，往往需要使用高速互联网络（如 Infini bands, NV links）等方式才能够在 scaling out 上使用 TP 取得很好的提升。</p>
+<h3 id="sequence-parallelism">Sequence Parallelism</h3>
+<p>Sequence Parallelism 在 TP 的基础上继续在 input channel 维度进行切分。相比于 TP 在 output channel 进行切分后需要对 result 进行 gather 以参与下一次运算（例如 MLP 的两层 Linear），SP 可以在保持 input channel 被切分的情况下继续参与下一次运算，从而减小集合通信的次数。</p>
+<p>以 Transformer Decoder Block 为例，若在 Prefilling 阶段采用 SP，那么就可以在 MLP 中完全不进行集合通信，每个 partition 单独经过 Linear, BatchNorm, Dropout 等层，直到需要进行 Attention 计算时再通过集合通信 Concatenate，相比 TP 减小了集合通信量。</p>
+<p>然而 SP 由于需要对 input channel 进行拆分，即拆分 activation。因此和 input shape 强相关，从而对并行调度和对不同场景的适配性不如 TP 稳定（因为 output channel 通常是由模型决定固定不变的）。例如在 LLM Inference 当中，prefilling 阶段能够很好的在 token 维度使用 SP 进行切分，但在 decoding 阶段却很难进行切分，因为 token 维度始终为 1。</p>
+<ul>
+<li>Memory 占用：减小 activation 的峰值占用。对模型的内存占用没有影响。</li>
+<li>Communication：同样需要对 activation 进行集合通信，但相比 TP 次数减少。</li>
+<li>Throughput &amp; Latency：和 TP 一样同样能够利用更多计算资源进行计算，提升 throughput，减小 latency。</li>
+</ul>
+<p>目前主流的实现有两种，一种是 Ulysses，通过在 Head 维度拆分来实现。他的好处是在 Attention 时不需要通信，分 head 去做就可以。另一种是 Ring，他是通过在 Sequence 维度拆分来实现，那么他的特点是在 Attention 时需要经过 N 次通信来实现全局 Attention 信息的计算。</p>
+<h3 id="expert-parallelism">Expert Parallelism</h3>
+<p>Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。</p>
+<p>而在 MoE 模型中，主要的显存压力在于专家参数上。因此通过将专家分布到多个 device 上来实现 Expert Parallelism，从而减小显存占用。</p>
+<ul>
+<li>Memory 占用：能够将 MoE 模型权重拆分到多个 device 上</li>
+<li>Communication：在每次 FFN 专家层计算结束后需要进行 all-to-all</li>
+<li>Throughput&amp;Latency：在专家层计算时利用更多的计算资源，减小专家层的计算时间，从而提高 Throughput 和 Latency。</li>
+</ul>
+<h2 id="long-context-inference">Long-Context Inference</h2>
+<p>在目前 thinking model 和 agent 等场景下，其实会遇到一个更加重要的问题就是 sequence length 越来越长了。一个是 input length 越来越长，在文档理解、agent 多轮交互等情况下对 prefilling 阶段的计算带来很大开销。另一个是 output length 越来越长，尤其是在 DeepSeek-R1 之后的 test-time scaling 范式下，long decoding 带来的更大 KV Cache 访存压力以及越来越大的计算开销也是不可忽视的。</p>
+<p>因此需要有一系列优化手段来提升长序列推理能力。</p>
+<h3 id="kv-cache-compression">KV Cache Compression</h3>
+<p>我们知道 KV Cache 的存储实际上是和序列长度成 <span class="arithmatex">\(O(n)\)</span> 线性关系的。因此长序列的 KV Cache 存储和访存压力也是不可忽视的。为了解决这个问题，大家提出了一系列的 KV Cache Compression 方法。</p>
+<h4 id="more-than-mha">More than MHA</h4>
+<p>为了缓解 KV Cache 的压力，大家提出了一系列 Attention 的变种来解决。</p>
+<ul>
+<li>MHA(baseline): 多个 head 各自一套 query, key, value。</li>
+<li>MQA(Multi-Query Attention): 所有 query head 共享同一个 key/value head。将 KV Cache 压缩到 <span class="arithmatex">\(\frac 1 H\)</span>，但对性能影响较大。</li>
+<li>GQA(Group-Query Attention): 在 MHA 和 MQA 中间进行插值，即将 heads 划分成多个 group，在一个 group 内多个 query head 共享一个 key head。目前主流开源模型采用的方法。</li>
+<li>MLA(Multi-Latent Attention): 由 DeepSeek 提出，将 x -&gt; KV 变成 x -&gt; shared latent KV -&gt; KV，从而极大降低 KV Cache 压力（详见 DeepSeek-V2 tech report）</li>
+</ul>
+<figure>
+  <img src="../mla.png" alt="各种 Attention 变种" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>各种 Attention 变种</b> 来源：<a href="http://arxiv.org/abs/2405.04434">DeepSeek-AI, 2024</a>）
+  </figcaption>
+</figure>
+
+<h4 id="kv-cache-eviction">KV Cache Eviction</h4>
+<p>最简单的思路是直接丢弃掉一些不重要的 KV Cache，从而减小 KV Cache 的大小。有一系列的工作（H2O, snapKV 等）都采用了这种思路，通过某种方法来评估每个 token 的重要性，然后丢弃掉不重要的 token 的 KV Cache，从而减小 KV Cache 的大小。</p>
+<p>后来有一些工作（如 Quest）发现，对于先前 token 不重要的 KV 在后续的推理过程中可能会变得重要，因此直接丢弃掉不重要的 KV 会带来较大的精度损失。于是相比于直接丢弃掉不重要的 KV，Quest 提出将不重要的 KV 先 offload 到 CPU 上，然后在后续需要时再将其 load 回 GPU 上进行计算，从而在减小 GPU 端 KV Cache 占用的同时减少精度损失。</p>
+<h4 id="kv-cache-quantization">KV Cache Quantization</h4>
+<p>另一种思路是通过量化来减小 KV Cache 的大小。例如 KIVI 这篇工作就是将 KV Cache 压缩到 2-bit，从而大幅减小 KV Cache 的存储占用，同时也减少了 decoding 阶段对 KV Cache 的访存开销。当然他这一篇是只在 KV 上做量化，目前如果考虑 weight 和 activation 的话比较成熟的是 QServe 提出的 W4A8KV4 的方案。</p>
+<p>我们在上一节中提到 KV 的重要性有所不同，因此为了减少量化损失，ZIPCache 等工作提出了对重要的 KV 使用更高精度的量化（如 8-bit），而对不重要的 KV 使用更低精度的量化（如 4-bit），从而在减小 KV Cache 占用的同时减少量化损失。</p>
+<h4 id="kv-cache-merging">KV Cache Merging</h4>
+<p>还有一种思路是合并层间 KV Cache。MiniCache 这篇工作就发现在整个模型后半部分，层间的 KV Cache 差异并不大，因此可以将多个层的 KV Cache 进行合并，从而减小 KV Cache 的存储占用。</p>
+<h3 id="sparse-attention">Sparse Attention</h3>
+<h4 id="motivation">Motivation</h4>
+<p>我们仔细看一下 Attention 的过程，首先 <span class="arithmatex">\(Q\)</span> 和 <span class="arithmatex">\(K^T\)</span> 进行乘法得到一个 <span class="arithmatex">\(nq\times nk\)</span> 的矩阵，这个矩阵我们也称为 attention score/map/weight。这里我们更关注他作为 weight 这个称呼，即他作为一个 weights，对一系列 value 进行加权最终得到最后的 output。</p>
+<p>这里 attention weight 的计算是 <span class="arithmatex">\(O(N^2)\)</span> 的，随着序列长度的增长平方增加，给计算带来很大的开销，这是面临的核心问题。</p>
+<p>然后我们对 attention weight 进行可视化，可以看到其实 attention weight 的分布并不是均匀的。由于过了一层 softmax，因此每一行经过 normalization 后和为 1。而这总和为 1 在一行中的分布并不是均匀的。大部分的数值集中在少部分的位置上。</p>
+<figure>
+  <img src="../attention-sparsity.png" alt="Attention 的稀疏性" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Attention 的稀疏性</b> 来源：<a href="https://arxiv.org/abs/2502.18137">Zhang et al., 2025</a>）
+  </figcaption>
+</figure>
+
+<p>而如果 attention weight 非常小（接近于0），他乘上 value 后对最后 output 的贡献也是很小的，我们是否能够直接跳过这一部分 attention weight 的计算，从而减小 attention weight 的计算开销来加速 attention 计算呢？由此我们便引出了 Sparse Attention，通过部分计算来实现更高效的 Attention。</p>
+<p>Sparse Attention 的核心思路可以从 attention mask 来理解。之前我们第一次接触到 attention mask 还是在语言模型的 causal mask 上，而在 sparse attention 中是通过 mask 将不重要的位置跳过，仅计算重要的位置。下面我们介绍的一系列 Sparse Attention 的工作，都可以看作围绕这个 sparse mask 展开。</p>
+<h4 id="static-sparse-attention">Static Sparse Attention</h4>
+<p>我们通过刚刚的可视化分析，可以发现其实对于不同的模型、不同的输入，有一些共通的 Pattern。</p>
+<ul>
+<li>对角线的 Attention 值很高</li>
+<li>在某一个位置 t 的 token，他会非常关注前面 [t-p, t] 的token，存在局部性</li>
+<li>前几个 token 的 attention score 非常高：Attention Sink</li>
+</ul>
+<figure>
+  <img src="../streamingllm.png" alt="StreamingLLM" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>StreamingLLM</b> 来源：<a href="https://arxiv.org/abs/2309.17453">Xiao et al., 2023</a>）
+  </figcaption>
+</figure>
+
+<p>因此我们可以根据这些 pattern，设计出一个静态的 mask，apply 到每一个 attention 上来提升他的速度。</p>
+<p>例如 StreamingLLM() 这篇文章，他就首次提出利用 attention sink 这个现象加上 sliding window 来加速 attention。</p>
+<h4 id="dynamic-sparse-attention">Dynamic Sparse Attention</h4>
+<p>当然静态的方法会有他的局限性，那就是他只能尽可能找到在各个配置下的最大公约数，而这样不够灵活的方式要么会遗漏掉重要的 attention 部分导致精度损失，要么会在一些不重要的 attention 上浪费计算资源。</p>
+<p>因此大家提出使用 dynamic 的方式，根据每一个 attention 的输入 qkv 来决定保留的 attention。</p>
+<p>一个最简单直接的想法就是对着 attention score 选数值高的部分，但做到精细选择的前提是先得到完整的 attention score，而我们本身就是想避免完整 attention score 的计算来提速，本末倒置了。同时以 token 为粒度进行选择往往是很分散的，在访存和计算上都会带来问题。</p>
+<p>因此现在主流的做法是不以 token 粒度去选，而是先将 attention weights 划分成一个个 block，然后通过一些近似的方法来估计 block 的重要性，只选择一些重要的块来进行计算。</p>
+<p>例如 SpargeAttention，就是通过平均池化来得到块重要性，然后选取重要的块来进行计算。</p>
+<h4 id="future-works">Future Works</h4>
+<p>最近几个月大家也都在许多地方探索 sparse attention 的更多可能，例如 DeepSeek Attention (DeepSeek-v3.2) 通过训练在 token 粒度而不是 block 粒度做 sparse attention，又或者是在视频生成领域 Sparse VideoGen 2 使用基于 k-means 的重排来将重要的 token 聚在一起计算等等。还有诸如 Sparse Linear Attention 和我们最近的一篇工作 Pyramid Sparse Attention 等在尝试打破 drop-or-keep 的固有模式。</p>
+<p>同时目前其实在工业界大家也都在探索更多高效的 attention 机制，DeepSeek 关注于 Sparse Attention，而 Qwen 和 Kimi 则最近都在关注引入 Linear Attention 的 Hybrid Attention 来提升 attention 效率。在实现 AGI 的路上，我认为 如何实现更加强大而高效的 Attention 机制本身还是一个非常根本的问题，目前我的研究兴趣也是关注于 Efficient Attention with Algorithm-System Co-Design 上，感兴趣的同学可以后续交流。</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 21, 2025 15:22:05 UTC">December 21, 2025</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 21, 2025 15:22:05 UTC">December 21, 2025</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.sections", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
