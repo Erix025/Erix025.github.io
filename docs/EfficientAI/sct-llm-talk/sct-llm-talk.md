@@ -33,7 +33,12 @@ $$
 
 Transformer 大家想必不陌生，最初 Transformer 的设计是由 Encoder 和 Decoder 两个部分组成。而目前主流的 LLM 都是采用 Decoder Only 的设计。
 
-![Transformer 示意图](Attention is All You Need)
+<figure>
+  <img src="../transformer.png" alt="Transformer 示意图" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Transformer 示意图</b>（来源：<a href="https://arxiv.org/abs/1706.03762">Vaswani et al., 2017</a>）
+  </figcaption>
+</figure>
 
 Transformer 有若干层，其中每一层都有一个 Self Attention 和一个 MLP。
 
@@ -41,19 +46,35 @@ Transformer 有若干层，其中每一层都有一个 Self Attention 和一个 
 
 而 Self Attention 他的 Self 关键在于怎么得到 QKV。QKV 在这里都是通过 x 经过三个 proj 得到的。因而叫做 self attention。与之相对的 Cross Attention 则是 Q 和 KV 来源不相同，这里不过多展开。
 
-![Self Attention 示意图](把 lab5 的抄过来)
+<figure>
+  <img src="../self-attention.png" alt="Self Attention in Transformer" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Self Attention in Transformer</b>
+  </figcaption>
+</figure>
 
 Attention 计算的复杂度是我们比较关心的，已知 QKV 的形状都是 [n, d]，那么如果只关注矩阵乘的开销，我们会得到一个 $O(n^2d)$ 的复杂度，当 $n \gg d$ 时（即面对序列长度很大的场景），Attention 的复杂度将变为 $O(n^2)$，这带来了大量的计算开销，也是我们后续优化的重点。
 
 这里还要补充一下 Causal Mask 的内容。因为在 LLM 中，我们希望模型根据前面的内容预测后面的知识，因此不希望其看到后面的内容。所以我们使用一个下三角矩阵作为 mask，使 Q 中的每一个 token 只能看到 K 中在他之前的 token。
 
-![Attention 示意图](展现出 QK 的 attention matrix)
+<figure>
+  <img src="../attention.png" alt="Attention 示意图" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Attention 示意图</b>（来源：<a href="https://peterchng.com/blog/2024/08/19/ring-attention-scaling-attention-across-multiple-devices/">Peter Chng, 2024</a>）
+  </figcaption>
+</figure>
 
 而 MLP 部分则是大家熟悉的两层 Linear 加一个激活函数的组合。
 
 近年来尤其是 DeepSeek-V3/R1 以来，MoE(Mixture of Expert)模型成为主流。即使用多个 MLP 来存储模型知识，而在实际推理时只调用其中 k 个 MLP，实现了在模型规模增大的同时不等比例增加推理开销。
 
-![MoE 示意图]
+<figure>
+  <img src="../moe.png" alt="MoE 示意图" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>MoE 示意图</b>（来源：<a href="https://arxiv.org/abs/2101.03961">Fedus et al., 2021</a>）
+  </figcaption>
+</figure>
+
 
 ### Prefilling and Decoding
 
@@ -97,11 +118,20 @@ Attention 计算的复杂度是我们比较关心的，已知 QKV 的形状都�
 
 量化最核心的概念就是用低比特数据类型来表示原来的数据。量化的过程就是将数值从高比特表示向低比特表示映射的过程，这是一个单向的、有损的过程。
 
-![数据类型]()
-
+<figure>
+  <img src="../dtype.png" alt="数据类型" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>数据类型</b>
+  </figcaption>
+</figure>
 目前主流的量化方法是采用线性映射的方式，这里会引入两个量化参数 scale 和 zero_point。通过这两个参数，我们能够将一组数值从高比特表示映射到低比特表示。并且能够通过“反量化”这个过程再将其还原到原来的表示（当然还原后肯定会引入误差，因为低比特表示的取值可能数少于高比特表示，这意味着高比特表示下两个不一样的数值有可能映射到同一个低比特表示，从而带来 error）
 
-![线性映射过程示意图]()
+<figure>
+  <img src="../linear-quant.png" alt="线性映射示意图">
+  <figcaption align="center">
+    <b>线性映射示意图</b> 来源：<a href="https://hanlab.mit.edu/courses/2024-fall-65940">MIT 6.5940</a>）
+  </figcaption>
+</figure>
 
 因此量化的过程就是给定一组数据，计算他们的 scale 和 zero_point，然后据此计算低比特表示 x_q，最终返回 (scale, zero_point, x_q)。
 
@@ -111,7 +141,12 @@ Attention 计算的复杂度是我们比较关心的，已知 QKV 的形状都�
 
 当然这里的 per-channel 只是举一个例子，实际的量化粒度会更复杂，例如目前主流的方案其实是通过 per-group 的粒度去做，例如将 128 个数值划分为一组去共享一个量化参数来去做。
 
-![Smooth Quant 示意图来说明粒度的影响。]
+<figure>
+  <img src="../outlier-channels.png" alt="Outlier among Channels" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Outlier among Channels</b> 来源：<a href="https://arxiv.org/abs/2211.10438">Xiao et al., 2022</a>）
+  </figcaption>
+</figure>
 
 讲完量化的一个基本概念，那么我们来看看他是怎么用到推理加速当中的。
 
@@ -204,9 +239,7 @@ Sequence Parallelism 在 TP 的基础上继续在 input channel 维度进行切�
 
 ### Expert Parallelism
 
-Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。MoE 模型通常包含多个专家（Expert），每个专家是一个 FFN（Feed Forward Network），在每次前向过程中只会激活其中的一部分专家。
-
-![MoE](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/blog/moe/00_switch_transformer.png)
+Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。
 
 而在 MoE 模型中，主要的显存压力在于专家参数上。因此通过将专家分布到多个 device 上来实现 Expert Parallelism，从而减小显存占用。
 
@@ -232,6 +265,13 @@ Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。
 - MQA(Multi-Query Attention): 所有 query head 共享同一个 key/value head。将 KV Cache 压缩到 $\frac 1 H$，但对性能影响较大。
 - GQA(Group-Query Attention): 在 MHA 和 MQA 中间进行插值，即将 heads 划分成多个 group，在一个 group 内多个 query head 共享一个 key head。目前主流开源模型采用的方法。
 - MLA(Multi-Latent Attention): 由 DeepSeek 提出，将 x -> KV 变成 x -> shared latent KV -> KV，从而极大降低 KV Cache 压力（详见 DeepSeek-V2 tech report）
+
+<figure>
+  <img src="../mla.png" alt="各种 Attention 变种" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>各种 Attention 变种</b> 来源：<a href="http://arxiv.org/abs/2405.04434">DeepSeek-AI, 2024</a>）
+  </figcaption>
+</figure>
 
 #### KV Cache Eviction
 
@@ -259,7 +299,12 @@ Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。
 
 然后我们对 attention weight 进行可视化，可以看到其实 attention weight 的分布并不是均匀的。由于过了一层 softmax，因此每一行经过 normalization 后和为 1。而这总和为 1 在一行中的分布并不是均匀的。大部分的数值集中在少部分的位置上。
 
-![Attention 分布图]()
+<figure>
+  <img src="../attention-sparsity.png" alt="Attention 的稀疏性" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>Attention 的稀疏性</b> 来源：<a href="https://arxiv.org/abs/2502.18137">Zhang et al., 2025</a>）
+  </figcaption>
+</figure>
 
 而如果 attention weight 非常小（接近于0），他乘上 value 后对最后 output 的贡献也是很小的，我们是否能够直接跳过这一部分 attention weight 的计算，从而减小 attention weight 的计算开销来加速 attention 计算呢？由此我们便引出了 Sparse Attention，通过部分计算来实现更高效的 Attention。
 
@@ -269,11 +314,16 @@ Sparse Attention 的核心思路可以从 attention mask 来理解。之前我�
 
 我们通过刚刚的可视化分析，可以发现其实对于不同的模型、不同的输入，有一些共通的 Pattern。
 
-![来一张 llm attention 的图片]()
-
 - 对角线的 Attention 值很高
 - 在某一个位置 t 的 token，他会非常关注前面 [t-p, t] 的token，存在局部性
 - 前几个 token 的 attention score 非常高：Attention Sink
+
+<figure>
+  <img src="../streamingllm.png" alt="StreamingLLM" style="max-height: 400px; width: auto;">
+  <figcaption align="center">
+    <b>StreamingLLM</b> 来源：<a href="https://arxiv.org/abs/2309.17453">Xiao et al., 2023</a>）
+  </figcaption>
+</figure>
 
 因此我们可以根据这些 pattern，设计出一个静态的 mask，apply 到每一个 attention 上来提升他的速度。
 
