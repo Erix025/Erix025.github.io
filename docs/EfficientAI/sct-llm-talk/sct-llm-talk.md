@@ -13,8 +13,7 @@
 这是因为 LLM 的整个过程就是一个 Next-Token-Prediction。每一次前向其实是把一个序列输入进入，预测整个序列的下一个词，然后不断重复这个过程。
 
 $$
-X_{t+1} = f(X_t)\\
-X_t=[x_0, \cdots, x_p, x_{p+1}, \cdots, x_{p+t}]
+X_{t+1} = f(X_t), \quad X_t=[x_0, \cdots, x_p, x_{p+1}, \cdots, x_{p+t}]
 $$
 
 每一个 $x_i$ 都是一个 token 对应的向量 (embedding)。这种通过不断调用 $f$ 来实现序列理解生成的模式我们也叫做 **自回归** (Auto Regressive)。
@@ -223,7 +222,7 @@ Attention 计算的复杂度是我们比较关心的，已知 QKV 的形状都�
 
 纵然 TP 能够在 throughput 和 latency 两个维度都有很好的提升，但这个前提是建立在通信带宽和延迟非常优秀的情况下。由于 TP 会有非常大的通信开销，往往需要使用高速互联网络（如 Infini bands, NV links）等方式才能够在 scaling out 上使用 TP 取得很好的提升。
 
-### Sequence Parallelism
+#### Sequence Parallelism
 
 Sequence Parallelism 在 TP 的基础上继续在 input channel 维度进行切分。相比于 TP 在 output channel 进行切分后需要对 result 进行 gather 以参与下一次运算（例如 MLP 的两层 Linear），SP 可以在保持 input channel 被切分的情况下继续参与下一次运算，从而减小集合通信的次数。
 
@@ -237,7 +236,7 @@ Sequence Parallelism 在 TP 的基础上继续在 input channel 维度进行切�
 
 目前主流的实现有两种，一种是 Ulysses，通过在 Head 维度拆分来实现。他的好处是在 Attention 时不需要通信，分 head 去做就可以。另一种是 Ring，他是通过在 Sequence 维度拆分来实现，那么他的特点是在 Attention 时需要经过 N 次通信来实现全局 Attention 信息的计算。
 
-### Expert Parallelism
+#### Expert Parallelism
 
 Expert Parallelism 是针对 MoE（Mixture of Experts）模型的并行策略。
 
