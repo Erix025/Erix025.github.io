@@ -10,6 +10,7 @@ nav:
       - Efficient Techniques:
           - 量化学习笔记：从 GPTQ 到 ZIPCache: EfficientAI/Techniques/SurveyOnQuantization.md
       - 大模型并行策略: EfficientAI/Parallelism.md
+      - 从零开始的 GDN 推导: EfficientAI/GDN_from_scratch.md
       - Basis of Diffusion Models:
           - 基础知识: EfficientAI/basis_of_diffusion.md
       - ZJUSCT Efficient LLM Infer 分享: EfficientAI/sct-llm-talk/sct-llm-talk.md
@@ -82,8 +83,7 @@ markdown_extensions:
 
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
 
 extra_css:
   - styles/global.css
